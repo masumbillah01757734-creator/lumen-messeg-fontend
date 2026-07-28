@@ -8,6 +8,7 @@ import MessageBubble from "./MessageBubble";
 import TypingDots from "./TypingDots";
 import ReplyBox from "./ReplyBox";
 import ConfirmDialog from "./ConfirmDialog";
+import ForwardModal from "./ForwardModal";
 import { useSocketEvent } from "../hooks/useSocket";
 
 export default function ChatWindow({ chatId, onChatMutated }) {
@@ -18,6 +19,7 @@ export default function ChatWindow({ chatId, onChatMutated }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null); // 'block' | 'delete' | null
   const [blockReason, setBlockReason] = useState("");
+  const [forwardMessage, setForwardMessage] = useState(null);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -154,7 +156,7 @@ export default function ChatWindow({ chatId, onChatMutated }) {
           <p className="text-center text-xs text-text-muted mt-6">No messages in this conversation yet.</p>
         )}
         {messages.map((m) => (
-          <MessageBubble key={m._id} message={m} />
+          <MessageBubble key={m._id} message={m} onForward={setForwardMessage} />
         ))}
         {typing && (
           <div className="px-4 py-1">
@@ -190,6 +192,14 @@ export default function ChatWindow({ chatId, onChatMutated }) {
         danger
         onCancel={() => setConfirmAction(null)}
         onConfirm={confirmDelete}
+      />
+
+      <ForwardModal
+        open={!!forwardMessage}
+        message={forwardMessage}
+        excludeChatId={chatId}
+        onClose={() => setForwardMessage(null)}
+        onForwarded={() => {}}
       />
     </div>
   );

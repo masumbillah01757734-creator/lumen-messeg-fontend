@@ -2,14 +2,17 @@
 
 import { FileText, Download } from "lucide-react";
 
-function fileUrl(fileId) {
+function fileUrl(fileId, fileName, { download = false } = {}) {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : "";
-  return `${process.env.NEXT_PUBLIC_API_URL}/files/${fileId}?token=${token}`;
+  const params = new URLSearchParams({ token: token || "" });
+  if (fileName) params.set("filename", fileName);
+  if (download) params.set("download", "1");
+  return `${process.env.NEXT_PUBLIC_API_URL}/files/${fileId}?${params.toString()}`;
 }
 
 export default function MediaPreview({ message }) {
   const { message_type, file_id, file_name, text } = message;
-  const src = file_id ? fileUrl(file_id) : null;
+  const src = file_id ? fileUrl(file_id, file_name) : null;
 
   switch (message_type) {
     case "photo":
@@ -54,12 +57,14 @@ export default function MediaPreview({ message }) {
         </audio>
       );
 
-    case "document":
+    case "document": {
+      // download=1 forces Content-Disposition: attachment on the backend, so zips and other
+      // archives actually save to disk instead of just opening a blank tab.
+      const downloadUrl = fileUrl(file_id, file_name, { download: true });
       return (
         <a
-          href={src}
-          target="_blank"
-          rel="noreferrer"
+          href={downloadUrl}
+          download={file_name || undefined}
           className="flex items-center gap-3 bg-elevated hover:bg-elevated/70 border border-border rounded-lg px-3 py-2.5 max-w-[260px] transition-colors"
         >
           <div className="h-9 w-9 rounded-lg bg-accent/15 flex items-center justify-center shrink-0">
@@ -69,6 +74,7 @@ export default function MediaPreview({ message }) {
           <Download size={16} className="text-text-muted shrink-0" />
         </a>
       );
+    }
 
     default:
       return null;
