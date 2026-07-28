@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  height: 100%;
+  background-color: #0f1417;
+  color: #e8edf2;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #26333f transparent;
+}
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #26333f;
+  border-radius: 999px;
+}
+
+/* Asymmetric message bubble tails — the app's signature visual detail */
+.bubble-in {
+  border-radius: 4px 18px 18px 18px;
+}
+.bubble-out {
+  border-radius: 18px 4px 18px 18px;
+}
+
+:focus-visible {
+  outline: 2px solid #2aabee;
+  outline-offset: 2px;
+}
