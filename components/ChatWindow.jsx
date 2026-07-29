@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MoreVertical, Pin, Archive, Ban, Trash2, ShieldCheck } from "lucide-react";
+import { MoreVertical, Pin, Archive, Ban, Trash2, ShieldCheck, ChevronLeft } from "lucide-react";
 import api from "../lib/api";
 import Avatar from "./Avatar";
 import MessageBubble from "./MessageBubble";
@@ -11,7 +11,7 @@ import ConfirmDialog from "./ConfirmDialog";
 import ForwardModal from "./ForwardModal";
 import { useSocketEvent } from "../hooks/useSocket";
 
-export default function ChatWindow({ chatId, onChatMutated }) {
+export default function ChatWindow({ chatId, onChatMutated, onBack }) {
   const [chat, setChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,6 +40,23 @@ export default function ChatWindow({ chatId, onChatMutated }) {
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [messages, typing]);
+
+  // Mobile hardware/browser back button support:
+  // When a chat is opened, push a history entry. If the user presses
+  // the phone's back button, intercept it (popstate) and go back to
+  // the chat list instead of leaving the page/app.
+  useEffect(() => {
+    if (!chatId) return;
+
+    window.history.pushState({ chatOpen: true, chatId }, "");
+
+    const handlePopState = () => {
+      onBack?.();
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [chatId]);
 
   useSocketEvent("message:new", (message) => {
     if (message.chat_id !== chatId) return;
@@ -91,6 +108,16 @@ export default function ChatWindow({ chatId, onChatMutated }) {
     onChatMutated?.();
   }
 
+  function handleBackClick() {
+    // If we pushed a history entry for this chat, go back through it so
+    // popstate fires and history stays clean; otherwise just call onBack.
+    if (window.history.state?.chatOpen) {
+      window.history.back();
+    } else {
+      onBack?.();
+    }
+  }
+
   if (!chatId) {
     return (
       <div className="flex-1 flex items-center justify-center text-text-muted text-sm">
@@ -113,6 +140,14 @@ export default function ChatWindow({ chatId, onChatMutated }) {
     <div className="flex-1 flex flex-col h-full bg-base">
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-surface">
+        <button
+          onClick={handleBackClick}
+          className="md:hidden -ml-1 h-8 w-8 shrink-0 rounded-lg flex items-center justify-center text-text-muted hover:bg-elevated"
+          aria-label="Back to chats"
+        >
+          <ChevronLeft size={20} />
+        </button>
+
         <Avatar user={chat} size={40} />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium truncate">{displayName}</p>
