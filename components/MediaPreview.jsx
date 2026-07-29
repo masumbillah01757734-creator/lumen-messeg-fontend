@@ -1,6 +1,7 @@
 "use client";
 
-import { FileText, Download } from "lucide-react";
+import { useState } from "react";
+import { FileText, Download, X } from "lucide-react";
 import VoicePlayer from "./VoicePlayer";
 
 function fileUrl(fileId, fileName, { download = false } = {}) {
@@ -11,6 +12,40 @@ function fileUrl(fileId, fileName, { download = false } = {}) {
   return `${process.env.NEXT_PUBLIC_API_URL}/files/${fileId}?${params.toString()}`;
 }
 
+// Tappable/clickable image: click once to go fullscreen, click again (or the X) to go back.
+function FullscreenableImage({ src, alt, className }) {
+  const [fullscreen, setFullscreen] = useState(false);
+
+  return (
+    <>
+      <img
+        src={src}
+        alt={alt}
+        className={`${className} cursor-zoom-in`}
+        loading="lazy"
+        onClick={() => setFullscreen(true)}
+      />
+
+      {fullscreen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 cursor-zoom-out"
+          onClick={() => setFullscreen(false)}
+        >
+          <button
+            type="button"
+            onClick={() => setFullscreen(false)}
+            aria-label="Close fullscreen"
+            className="absolute top-4 right-4 h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+          >
+            <X size={18} />
+          </button>
+          <img src={src} alt={alt} className="max-w-full max-h-full object-contain" />
+        </div>
+      )}
+    </>
+  );
+}
+
 export default function MediaPreview({ message, isOut = false }) {
   const { message_type, file_id, file_name, text } = message;
   const src = file_id ? fileUrl(file_id, file_name) : null;
@@ -18,11 +53,10 @@ export default function MediaPreview({ message, isOut = false }) {
   switch (message_type) {
     case "photo":
       return (
-        <img
+        <FullscreenableImage
           src={src}
           alt={text || "Photo"}
           className="rounded-lg w-full max-w-[280px] max-h-[320px] object-cover"
-          loading="lazy"
         />
       );
 
@@ -44,7 +78,7 @@ export default function MediaPreview({ message, isOut = false }) {
       );
 
     case "animation": // GIF
-      return <img src={src} alt="GIF" className="rounded-lg w-full max-w-[240px]" loading="lazy" />;
+      return <FullscreenableImage src={src} alt="GIF" className="rounded-lg w-full max-w-[240px]" />;
 
     case "sticker":
       return (

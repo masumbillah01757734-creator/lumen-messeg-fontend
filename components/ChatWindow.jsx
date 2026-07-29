@@ -23,10 +23,14 @@ import ConfirmDialog from "./ConfirmDialog";
 import ForwardModal from "./ForwardModal";
 import { useSocketEvent } from "../hooks/useSocket";
 
+const MSG_PAGE_SIZE = 30;
+
 export default function ChatWindow({ chatId, onChatMutated, onBack }) {
   const [chat, setChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [typing, setTyping] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null); // 'block' | 'delete' | null
@@ -34,16 +38,25 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
   const [forwardMessage, setForwardMessage] = useState(null);
   const scrollRef = useRef(null);
   const menuRef = useRef(null);
+  // When we prepend older messages, the browser keeps scrollTop the same (in pixels from
+  // the top), which visually yanks the view down by however much taller the list just got.
+  // These two refs let us cancel that out and restore the user's reading position instead
+  // of auto-scrolling to the bottom, which the effect below normally does on every update.
+  const prependingRef = useRef(false);
+  const prevScrollHeightRef = useRef(0);
 
   useEffect(() => {
     if (!chatId) return;
     setLoading(true);
     setMenuOpen(false);
+    setHasMore(true);
+    prependingRef.current = false;
 
-    Promise.all([api.get(`/chats/${chatId}`), api.get(`/messages/${chatId}`)])
+    Promise.all([api.get(`/chats/${chatId}`), api.get(`/messages/${chatId}`, { params: { limit: MSG_PAGE_SIZE } })])
       .then(([chatRes, msgRes]) => {
         setChat(chatRes.data.chat);
         setMessages(msgRes.data.messages);
+        setHasMore(msgRes.data.messages.length >= MSG_PAGE_SIZE);
       })
       .finally(() => setLoading(false));
 
@@ -51,8 +64,39 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
   }, [chatId]);
 
   useEffect(() => {
+    if (prependingRef.current) {
+      // Just loaded older messages — pin the view to where it was instead of jumping to bottom.
+      const el = scrollRef.current;
+      if (el) el.scrollTop = el.scrollHeight - prevScrollHeightRef.current;
+      prependingRef.current = false;
+      return;
+    }
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, typing]);
+
+  async function loadOlderMessages() {
+    if (loadingMore || !hasMore || messages.length === 0) return;
+    setLoadingMore(true);
+    try {
+      const oldest = messages[0];
+      const { data } = await api.get(`/messages/${chatId}`, {
+        params: { before: oldest.date, limit: MSG_PAGE_SIZE },
+      });
+      const older = data.messages;
+      setHasMore(older.length >= MSG_PAGE_SIZE);
+      if (older.length > 0) {
+        prependingRef.current = true;
+        prevScrollHeightRef.current = scrollRef.current?.scrollHeight || 0;
+        setMessages((prev) => [...older, ...prev]);
+      }
+    } finally {
+      setLoadingMore(false);
+    }
+  }
+
+  function handleMessagesScroll(e) {
+    if (e.target.scrollTop < 80) loadOlderMessages();
+  }
 
   // Close the header menu on outside click, so it behaves like a real popover.
   useEffect(() => {
@@ -253,7 +297,12 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
       </div>
 
       {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto py-4">
+      <div ref={scrollRef} onScroll={handleMessagesScroll} className="flex-1 overflow-y-auto py-4">
+        {loadingMore && (
+          <div className="flex justify-center py-2">
+            <div className="h-4 w-4 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+          </div>
+        )}
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center gap-3 text-center px-6">
             <div className="h-12 w-12 rounded-full bg-elevated border border-border flex items-center justify-center text-text-muted text-sm font-medium">
