@@ -73,7 +73,7 @@ export default function ReplyBox({ chatId, disabled, onSent }) {
   }
 
   return (
-    <form onSubmit={handleSend} className="relative border-t border-border bg-surface px-4 py-3 flex flex-col gap-2">
+    <form onSubmit={handleSend} className="border-t border-border bg-surface px-4 py-3 flex flex-col gap-2 absolute bottom-0 [width:stretch]">
       {pendingFile && (
         <div className="flex items-center gap-2 bg-elevated border border-border rounded-lg px-3 py-2 text-xs">
           <FileText size={14} className="text-accent shrink-0" />
@@ -82,7 +82,7 @@ export default function ReplyBox({ chatId, disabled, onSent }) {
             <span className="text-text-muted shrink-0">{uploadPct}%</span>
           ) : (
             <button
-              type="button"
+              type="button"z
               onClick={() => setPendingFile(null)}
               className="text-text-muted hover:text-danger shrink-0"
             >
