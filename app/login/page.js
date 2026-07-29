@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Send, Loader2 } from "lucide-react";
+import { Flame, Loader2 } from "lucide-react";
 import api from "../../lib/api";
 
 export default function LoginPage() {
@@ -28,13 +28,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-base px-4">
+    <div className="min-h-screen flex items-center justify-center bg-base ember-wash px-4">
       <div className="w-full max-w-sm">
-        <div className="flex items-center gap-2 justify-center mb-8">
-          <div className="h-10 w-10 rounded-2xl bg-accent/15 flex items-center justify-center">
-            <Send size={20} className="text-accent" />
+        <div className="flex flex-col items-center gap-3 mb-9">
+          <div className="h-14 w-14 rounded-2xl bg-ember flex items-center justify-center shadow-ember">
+            <Flame size={26} className="text-white" fill="currentColor" />
           </div>
-          <span className="font-display text-xl font-bold tracking-tight">Dashboard</span>
+          <span className="font-display text-2xl font-bold tracking-tight">Lumen</span>
         </div>
 
         <form
@@ -42,8 +42,8 @@ export default function LoginPage() {
           className="bg-surface border border-border rounded-xl2 p-6 shadow-panel space-y-4"
         >
           <div>
-            <h1 className="font-display text-lg font-semibold mb-1">Admin sign in</h1>
-            <p className="text-sm text-text-muted">Reply to your Telegram bot's messages from here.</p>
+            <h1 className="font-display text-lg font-semibold mb-1">Sign in to your inbox</h1>
+            <p className="text-sm text-text-muted">Reply to every Telegram conversation from one place.</p>
           </div>
 
           {error && (
@@ -79,7 +79,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-accent hover:bg-accent-dim disabled:opacity-60 text-white font-medium text-sm rounded-lg py-2.5 flex items-center justify-center gap-2 transition-colors"
+            className="w-full bg-ember hover:brightness-110 disabled:opacity-60 text-white font-medium text-sm rounded-lg py-2.5 flex items-center justify-center gap-2 transition-all shadow-ember"
           >
             {loading && <Loader2 size={16} className="animate-spin" />}
             Sign in

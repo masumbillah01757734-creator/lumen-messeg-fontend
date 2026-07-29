@@ -149,7 +149,7 @@ export default function ReplyBox({ chatId, disabled, onSent }) {
         <button
           type="submit"
           disabled={(!text.trim() && !pendingFile) || sending}
-          className="h-9 w-9 shrink-0 rounded-full bg-accent hover:bg-accent-dim disabled:opacity-40 disabled:cursor-not-allowed text-white flex items-center justify-center transition-colors"
+          className="h-9 w-9 shrink-0 rounded-full bg-ember hover:brightness-110 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed text-white flex items-center justify-center transition-all shadow-ember"
         >
           <Send size={16} />
         </button>

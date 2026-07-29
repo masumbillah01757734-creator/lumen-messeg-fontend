@@ -1,6 +1,7 @@
 "use client";
 
 import { FileText, Download } from "lucide-react";
+import VoicePlayer from "./VoicePlayer";
 
 function fileUrl(fileId, fileName, { download = false } = {}) {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : "";
@@ -10,7 +11,7 @@ function fileUrl(fileId, fileName, { download = false } = {}) {
   return `${process.env.NEXT_PUBLIC_API_URL}/files/${fileId}?${params.toString()}`;
 }
 
-export default function MediaPreview({ message }) {
+export default function MediaPreview({ message, isOut = false }) {
   const { message_type, file_id, file_name, text } = message;
   const src = file_id ? fileUrl(file_id, file_name) : null;
 
@@ -54,18 +55,10 @@ export default function MediaPreview({ message }) {
       );
 
     case "audio":
-      return (
-        <audio controls className="w-64">
-          <source src={src} />
-        </audio>
-      );
+      return <VoicePlayer src={src} seed={file_id} variant="audio" inverted={isOut} />;
 
     case "voice":
-      return (
-        <audio controls className="w-56">
-          <source src={src} type="audio/ogg" />
-        </audio>
-      );
+      return <VoicePlayer src={src} seed={file_id} variant="voice" inverted={isOut} />;
 
     case "document": {
       // download=1 forces Content-Disposition: attachment on the backend, so zips and other

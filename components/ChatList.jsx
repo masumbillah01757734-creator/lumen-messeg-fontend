@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, Send, Archive as ArchiveIcon, Users } from "lucide-react";
+import { Search, Flame, Archive as ArchiveIcon, Users } from "lucide-react";
 import api from "../lib/api";
 import ChatListItem from "./ChatListItem";
 import { useSocketEvent } from "../hooks/useSocket";
@@ -61,12 +61,12 @@ export default function ChatList({ activeChatId, onSelectChat, onOpenBlocked }) 
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-4 pt-4 pb-3 flex items-center justify-between">
+      <div className="px-4 pt-4 pb-3 flex items-center justify-between ember-wash">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-xl bg-accent/15 flex items-center justify-center">
-            <Send size={16} className="text-accent" />
+          <div className="h-8 w-8 rounded-xl bg-ember flex items-center justify-center shadow-ember">
+            <Flame size={15} className="text-white" fill="currentColor" />
           </div>
-          <h1 className="font-display font-bold text-base">Messages</h1>
+          <h1 className="font-display font-bold text-base tracking-tight">Lumen</h1>
         </div>
         <div className="flex items-center gap-1">
           <button
@@ -104,7 +104,7 @@ export default function ChatList({ activeChatId, onSelectChat, onOpenBlocked }) 
         {loading && <p className="text-center text-xs text-text-muted mt-6">Loading chats…</p>}
         {!loading && chats.length === 0 && (
           <p className="text-center text-xs text-text-muted mt-6">
-            {showArchived ? "No archived chats." : "No messages yet. Waiting for your first Telegram user…"}
+            {showArchived ? "No archived chats." : "No conversations yet — new messages will show up here."}
           </p>
         )}
         {chats.map((chat) => (

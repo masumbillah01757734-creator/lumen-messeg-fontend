@@ -22,11 +22,13 @@ export default function MessageBubble({ message, onForward }) {
       )}
 
       <div
-        className={`max-w-[70%] px-3.5 py-2 ${isOut ? "bubble-out bg-accent text-white" : "bubble-in bg-elevated text-text-primary"}`}
+        className={`max-w-[70%] px-3.5 py-2 shadow-panel ${
+          isOut ? "bubble-out bg-ember text-white" : "bubble-in bg-elevated text-text-primary"
+        }`}
       >
         {message.message_type !== "text" && (
           <div className={message.text ? "mb-1.5" : ""}>
-            <MediaPreview message={message} />
+            <MediaPreview message={message} isOut={isOut} />
           </div>
         )}
 
