@@ -73,7 +73,7 @@ export default function ReplyBox({ chatId, disabled, onSent }) {
   }
 
   return (
-    <form onSubmit={handleSend} className="border-t border-border bg-surface px-4 py-3 flex flex-col gap-2 [width:stretch]">
+    <form onSubmit={handleSend} className="border-t border-border bg-surface px-4 py-3 flex flex-col gap-2 [width:stretch] relative bottom-0">
       {pendingFile && (
         <div className="flex items-center gap-2 bg-elevated border border-border rounded-lg px-3 py-2 text-xs">
           <FileText size={14} className="text-accent shrink-0" />
