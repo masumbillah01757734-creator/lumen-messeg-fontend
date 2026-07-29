@@ -5,22 +5,22 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        base: "#0B0A09",
-        surface: "#14120F",
-        elevated: "#1D1A16",
-        border: "#2B2620",
+        base: "#0A1316",
+        surface: "#0F1B1F",
+        elevated: "#17262B",
+        border: "#223339",
         accent: {
-          DEFAULT: "#FF7A3D",
-          dim: "#D9601F",
-          bright: "#FFB37A",
-          soft: "rgba(255, 122, 61, 0.14)",
+          DEFAULT: "#2BB6C9",
+          dim: "#1D8C9C",
+          bright: "#8CE9F2",
+          soft: "rgba(43, 182, 201, 0.14)",
         },
         online: "#43D97B",
         danger: "#F2564F",
         text: {
-          primary: "#F4EFE9",
-          muted: "#9C9187",
-          faint: "#645B52",
+          primary: "#EAF3F4",
+          muted: "#8FA3A8",
+          faint: "#5C7075",
         },
       },
       fontFamily: {
@@ -31,13 +31,13 @@ module.exports = {
         xl2: "1.25rem",
       },
       backgroundImage: {
-        ember: "linear-gradient(135deg, #FF7A3D 0%, #D9601F 100%)",
-        "ember-radial": "radial-gradient(circle at 30% 20%, rgba(255,122,61,0.35), rgba(11,10,9,0) 60%)",
+        ember: "linear-gradient(135deg, #2BB6C9 0%, #2467D1 100%)",
+        "ember-radial": "radial-gradient(circle at 30% 20%, rgba(43,182,201,0.30), rgba(10,19,22,0) 60%)",
       },
       boxShadow: {
         panel: "0 0 0 1px rgba(255,255,255,0.04)",
         glow: "0 0 0 3px rgba(67, 217, 123, 0.15)",
-        ember: "0 4px 24px -6px rgba(255, 122, 61, 0.45)",
+        ember: "0 4px 24px -6px rgba(43, 182, 201, 0.45)",
       },
       keyframes: {
         typingDot: {
