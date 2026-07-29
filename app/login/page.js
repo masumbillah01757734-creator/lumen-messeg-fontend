@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MessageCircle, Loader2 } from "lucide-react";
+import { Flame, Loader2 } from "lucide-react";
 import api from "../../lib/api";
 
 export default function LoginPage() {
@@ -32,7 +32,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center gap-3 mb-9">
           <div className="h-14 w-14 rounded-2xl bg-ember flex items-center justify-center shadow-ember">
-            <MessageCircle size={26} className="text-white" fill="currentColor" />
+            <Flame size={26} className="text-white" fill="currentColor" />
           </div>
           <span className="font-display text-2xl font-bold tracking-tight">Lumen</span>
         </div>

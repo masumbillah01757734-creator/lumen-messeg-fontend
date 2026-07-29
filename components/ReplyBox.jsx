@@ -93,12 +93,12 @@ export default function ReplyBox({ chatId, disabled, onSent }) {
 
       <div className="flex items-end gap-2">
         {showEmoji && (
-          <div className="absolute bottom-16 left-4 bg-[#252019] border border-border/80 rounded-xl p-2 flex gap-1 shadow-xl shadow-black/40 z-10">
+          <div className="absolute bottom-16 left-4 bg-elevated border border-border rounded-lg p-2 flex gap-1 shadow-panel">
             {QUICK_EMOJIS.map((emoji) => (
               <button
                 key={emoji}
                 type="button"
-                className="h-9 w-9 flex items-center justify-center text-xl rounded-lg hover:bg-elevated hover:scale-110 transition-all"
+                className="text-lg hover:scale-110 transition-transform"
                 onClick={() => {
                   setText((t) => t + emoji);
                   setShowEmoji(false);
@@ -113,9 +113,7 @@ export default function ReplyBox({ chatId, disabled, onSent }) {
         <button
           type="button"
           onClick={() => setShowEmoji((s) => !s)}
-          className={`h-9 w-9 shrink-0 rounded-full flex items-center justify-center transition-colors ${
-            showEmoji ? "bg-elevated text-accent" : "text-text-muted hover:bg-elevated hover:text-text-primary"
-          }`}
+          className="h-9 w-9 shrink-0 rounded-full flex items-center justify-center text-text-muted hover:bg-elevated transition-colors"
         >
           <Smile size={20} />
         </button>

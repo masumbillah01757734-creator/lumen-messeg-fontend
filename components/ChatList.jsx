@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, MessageCircle, Archive as ArchiveIcon, Users } from "lucide-react";
+import { Search, Flame, Archive as ArchiveIcon, Users } from "lucide-react";
 import api from "../lib/api";
 import ChatListItem from "./ChatListItem";
 import { useSocketEvent } from "../hooks/useSocket";
@@ -60,11 +60,11 @@ export default function ChatList({ activeChatId, onSelectChat, onOpenBlocked }) 
   });
 
   return (
-    <div className="flex flex-col flex-1 min-h-0">
-      <div className="px-4 pt-4 pb-3 flex items-center justify-between ember-wash shrink-0">
+    <div className="flex flex-col h-full">
+      <div className="px-4 pt-4 pb-3 flex items-center justify-between ember-wash">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-xl bg-ember flex items-center justify-center shadow-ember">
-            <MessageCircle size={15} className="text-white" fill="currentColor" />
+            <Flame size={15} className="text-white" fill="currentColor" />
           </div>
           <h1 className="font-display font-bold text-base tracking-tight">Lumen</h1>
         </div>
@@ -88,7 +88,7 @@ export default function ChatList({ activeChatId, onSelectChat, onOpenBlocked }) 
         </div>
       </div>
 
-      <div className="px-4 pb-3 shrink-0">
+      <div className="px-4 pb-3">
         <div className="relative">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-faint" />
           <input
@@ -100,7 +100,7 @@ export default function ChatList({ activeChatId, onSelectChat, onOpenBlocked }) 
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 overflow-y-auto px-2 pb-4 space-y-0.5">
+      <div className="flex-1 overflow-y-auto px-2 pb-4 space-y-0.5">
         {loading && <p className="text-center text-xs text-text-muted mt-6">Loading chats…</p>}
         {!loading && chats.length === 0 && (
           <p className="text-center text-xs text-text-muted mt-6">
