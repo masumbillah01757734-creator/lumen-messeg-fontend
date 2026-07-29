@@ -164,7 +164,7 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
   const initialLetter = displayName?.[0]?.toUpperCase() ?? "?";
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-base">
+    <div className="flex-1 flex flex-col h-[80vh] bg-base">
       {/* Header */}
       <div className="sticky flex items-center gap-3 px-3 md:px-4 py-2.5 border-b border-border bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/80">
         <button
