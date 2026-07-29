@@ -151,7 +151,7 @@ export default function ChatWindow({ chatId, onChatMutated }) {
       </div>
 
       {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto py-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto py-3 mb-[90px] md:mb-[55px]">
         {messages.length === 0 && (
           <p className="text-center text-xs text-text-muted mt-6">No messages in this conversation yet.</p>
         )}
