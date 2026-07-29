@@ -1,8 +1,9 @@
+//C:\Users\Admin\Desktop\lumen messesg\frontend\app\dashboard\page.js
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut, ArrowLeft } from "lucide-react";
+import { LogOut } from "lucide-react";
 import ChatList from "../../components/ChatList";
 import ChatWindow from "../../components/ChatWindow";
 import BlockedUsersModal from "../../components/BlockedUsersModal";
@@ -61,15 +62,11 @@ export default function DashboardPage() {
 
       {/* Conversation pane */}
       <main className={`flex-1 flex flex-col ${activeChatId ? "flex" : "hidden sm:flex"}`}>
-        {activeChatId && (
-          <button
-            onClick={() => setActiveChatId(null)}
-            className="sm:hidden flex items-center gap-1.5 px-4 py-2 text-xs text-text-muted border-b border-border"
-          >
-            <ArrowLeft size={14} /> Back to chats
-          </button>
-        )}
-        <ChatWindow chatId={activeChatId} onChatMutated={() => setRefreshKey((k) => k + 1)} />
+        <ChatWindow
+          chatId={activeChatId}
+          onBack={() => setActiveChatId(null)}
+          onChatMutated={() => setRefreshKey((k) => k + 1)}
+        />
       </main>
 
       <BlockedUsersModal open={blockedModalOpen} onClose={() => setBlockedModalOpen(false)} />
