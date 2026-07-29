@@ -5,6 +5,7 @@ import { Search, MessageCircle, Archive as ArchiveIcon, Users } from "lucide-rea
 import api from "../lib/api";
 import ChatListItem from "./ChatListItem";
 import { useSocketEvent } from "../hooks/useSocket";
+import { playNotificationSound } from "../lib/notificationSound";
 
 export default function ChatList({ activeChatId, onSelectChat, onOpenBlocked }) {
   const [chats, setChats] = useState([]);
@@ -29,6 +30,9 @@ export default function ChatList({ activeChatId, onSelectChat, onOpenBlocked }) 
   }, [search, showArchived]);
 
   useSocketEvent("message:new", (message) => {
+    // Only ding for incoming messages, not the admin's own replies echoed back.
+    if (message.sender === "user") playNotificationSound();
+
     setChats((prev) => {
       const idx = prev.findIndex((c) => c.chat_id === message.chat_id);
       if (idx === -1) return prev;
