@@ -89,7 +89,7 @@ export default function MediaPreview({ message, isOut = false }) {
       );
 
     case "audio":
-      return <VoicePlayer src={src} seed={file_id} variant="audio" inverted={isOut} />;
+      return <VoicePlayer src={src} seed={file_id} variant="audio" inverted={isOut} fileName={file_name} />;
 
     case "voice":
       return <VoicePlayer src={src} seed={file_id} variant="voice" inverted={isOut} />;
@@ -102,13 +102,21 @@ export default function MediaPreview({ message, isOut = false }) {
         <a
           href={downloadUrl}
           download={file_name || undefined}
-          className="flex items-center gap-3 bg-elevated hover:bg-elevated/70 border border-border rounded-lg px-3 py-2.5 max-w-[260px] transition-colors"
+          className={`flex items-center gap-3 border rounded-lg px-3 py-2.5 max-w-[260px] transition-colors ${
+            isOut
+              ? "bg-white/10 hover:bg-white/15 border-white/15"
+              : "bg-elevated hover:bg-elevated/70 border-border"
+          }`}
         >
-          <div className="h-9 w-9 rounded-lg bg-accent/15 flex items-center justify-center shrink-0">
-            <FileText size={18} className="text-accent" />
+          <div
+            className={`h-9 w-9 rounded-lg flex items-center justify-center shrink-0 ${
+              isOut ? "bg-white/20" : "bg-accent/15"
+            }`}
+          >
+            <FileText size={18} className={isOut ? "text-white" : "text-accent"} />
           </div>
           <span className="text-sm truncate flex-1">{file_name || "Document"}</span>
-          <Download size={16} className="text-text-muted shrink-0" />
+          <Download size={16} className={`shrink-0 ${isOut ? "text-white/70" : "text-text-muted"}`} />
         </a>
       );
     }

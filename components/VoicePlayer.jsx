@@ -28,13 +28,16 @@ function formatTime(sec) {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-export default function VoicePlayer({ src, seed, variant = "voice", inverted = false }) {
+const SPEEDS = [1, 1.5, 2];
+
+export default function VoicePlayer({ src, seed, variant = "voice", inverted = false, fileName = null }) {
   const audioRef = useRef(null);
   const trackRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0); // 0..1
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const [speed, setSpeed] = useState(1);
 
   const bars = useMemo(() => waveform(seed || src || "voice"), [seed, src]);
 
@@ -63,6 +66,12 @@ export default function VoicePlayer({ src, seed, variant = "voice", inverted = f
     };
   }, []);
 
+  // Keep the <audio> element's actual playback rate in sync with the chosen speed,
+  // whether it's changed mid-playback or before the clip has even started.
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.playbackRate = speed;
+  }, [speed]);
+
   function togglePlay() {
     const audio = audioRef.current;
     if (!audio) return;
@@ -70,9 +79,16 @@ export default function VoicePlayer({ src, seed, variant = "voice", inverted = f
       audio.pause();
       setPlaying(false);
     } else {
+      audio.playbackRate = speed;
       audio.play();
       setPlaying(true);
     }
+  }
+
+  function cycleSpeed(e) {
+    e.stopPropagation();
+    const next = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length];
+    setSpeed(next);
   }
 
   function seekTo(clientX) {
@@ -88,7 +104,13 @@ export default function VoicePlayer({ src, seed, variant = "voice", inverted = f
   const label = variant === "audio" ? "Audio" : "Voice message";
 
   return (
-    <div className="flex items-center gap-2.5 w-full max-w-[224px] min-w-0">
+    <div className="w-full max-w-[224px] min-w-0">
+      {fileName && (
+        <div className={`text-[11px] font-medium truncate mb-1 ${inverted ? "text-white/90" : "text-text"}`}>
+          {fileName}
+        </div>
+      )}
+      <div className="flex items-center gap-2.5 w-full min-w-0">
       <audio ref={audioRef} src={src} preload="metadata" className="hidden" />
 
       <button
@@ -122,9 +144,22 @@ export default function VoicePlayer({ src, seed, variant = "voice", inverted = f
             );
           })}
         </div>
-        <span className="block text-[10px] mt-0.5 opacity-70 tabular-nums">
-          {formatTime(playing || currentTime > 0 ? currentTime : duration)}
-        </span>
+        <div className="flex items-center justify-between gap-2 mt-0.5">
+          <span className="text-[10px] opacity-70 tabular-nums">
+            {formatTime(currentTime)} / {formatTime(duration)}
+          </span>
+          <button
+            type="button"
+            onClick={cycleSpeed}
+            aria-label="Change playback speed"
+            className={`shrink-0 text-[10px] font-semibold leading-none px-1.5 py-0.5 rounded-full transition-colors ${
+              inverted ? "bg-white/20 hover:bg-white/30 text-white" : "bg-accent/15 hover:bg-accent/25 text-accent"
+            }`}
+          >
+            {speed}x
+          </button>
+        </div>
+      </div>
       </div>
     </div>
   );
