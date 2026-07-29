@@ -41,3 +41,12 @@ body {
 .ember-wash {
   background-image: radial-gradient(circle at 20% 0%, rgba(43, 182, 201, 0.18), transparent 55%);
 }
+
+/* Twemoji images swapped in for emoji characters — sized to sit inline with text */
+img.inline-emoji {
+  height: 1.2em;
+  width: 1.2em;
+  margin: 0 0.05em;
+  vertical-align: -0.2em;
+  display: inline-block;
+}

@@ -3,6 +3,7 @@
 import { formatDistanceToNowStrict } from "date-fns";
 import { Pin, Ban } from "lucide-react";
 import Avatar from "./Avatar";
+import { emojifyHtml } from "../lib/emoji";
 
 function preview(message) {
   if (!message) return "No messages yet";
@@ -37,7 +38,10 @@ export default function ChatListItem({ chat, active, onClick }) {
           )}
         </div>
         <div className="flex items-center justify-between gap-2 mt-0.5">
-          <span className="text-xs text-text-muted truncate">{preview(chat.last_message)}</span>
+          <span
+            className="text-xs text-text-muted truncate"
+            dangerouslySetInnerHTML={{ __html: emojifyHtml(preview(chat.last_message)) }}
+          />
           {chat.unread_count > 0 && (
             <span className="shrink-0 bg-accent text-white text-[10px] font-semibold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
               {chat.unread_count > 99 ? "99+" : chat.unread_count}

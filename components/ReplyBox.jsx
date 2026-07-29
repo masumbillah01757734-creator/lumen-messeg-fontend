@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { Send, Smile, Paperclip, X, FileText } from "lucide-react";
 import api from "../lib/api";
 import { useSocket } from "../hooks/useSocket";
+import { emojifyHtml } from "../lib/emoji";
 
 const QUICK_EMOJIS = ["😀", "😂", "❤️", "👍", "🙏", "🎉", "🔥", "😢"];
 
@@ -103,9 +104,8 @@ export default function ReplyBox({ chatId, disabled, onSent }) {
                   setText((t) => t + emoji);
                   setShowEmoji(false);
                 }}
-              >
-                {emoji}
-              </button>
+                dangerouslySetInnerHTML={{ __html: emojifyHtml(emoji) }}
+              />
             ))}
           </div>
         )}

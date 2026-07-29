@@ -3,6 +3,7 @@
 import { format } from "date-fns";
 import { Forward } from "lucide-react";
 import MediaPreview from "./MediaPreview";
+import { emojifyHtml } from "../lib/emoji";
 
 export default function MessageBubble({ message, onForward }) {
   const isOut = message.sender === "admin";
@@ -33,7 +34,10 @@ export default function MessageBubble({ message, onForward }) {
         )}
 
         {message.text && message.message_type !== "sticker" && (
-          <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">{message.text}</p>
+          <p
+            className="text-sm whitespace-pre-wrap break-words leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: emojifyHtml(message.text) }}
+          />
         )}
 
         <span className={`block text-[10px] mt-1 text-right ${isOut ? "text-white/70" : "text-text-faint"}`}>
