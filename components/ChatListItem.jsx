@@ -7,7 +7,7 @@ import Avatar from "./Avatar";
 function preview(message) {
   if (!message) return "No messages yet";
   if (message.message_type === "text") return message.text;
-  const label = { photo: "Photo", video: "Video", audio: "Audio", voice: "Voice message", sticker: "Sticker", animation: "GIF", document: "Document" }[message.message_type];
+  const label = { photo: "Photo", video: "Video", video_note: "Video message", audio: "Audio", voice: "Voice message", sticker: "Sticker", animation: "GIF", document: "Document" }[message.message_type];
   return `${message.sender === "admin" ? "You: " : ""}${label}`;
 }
 

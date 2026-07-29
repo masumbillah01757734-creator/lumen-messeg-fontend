@@ -32,6 +32,16 @@ export default function MediaPreview({ message }) {
         </video>
       );
 
+    case "video_note":
+      return (
+        <video
+          controls
+          className="rounded-full w-[200px] h-[200px] object-cover"
+        >
+          <source src={src} />
+        </video>
+      );
+
     case "animation": // GIF
       return <img src={src} alt="GIF" className="rounded-lg max-w-[240px]" loading="lazy" />;
 
