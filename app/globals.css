@@ -5,20 +5,22 @@
 html,
 body {
   height: 100%;
-  background-color: #0b0a09;
-  color: #f4efe9;
+  background-color: #0a1316;
+  color: #eaf3f4;
+  font-family: var(--font-inter), sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2b2620 transparent;
+  scrollbar-color: #223339 transparent;
 }
 *::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 *::-webkit-scrollbar-thumb {
-  background-color: #2b2620;
+  background-color: #223339;
   border-radius: 999px;
 }
 
@@ -31,11 +33,11 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid #ff7a3d;
+  outline: 2px solid #2bb6c9;
   outline-offset: 2px;
 }
 
-/* Faint ember glow behind the sidebar header — the brand's signature warmth */
+/* Faint brand glow behind the sidebar header — the identity's signature touch */
 .ember-wash {
-  background-image: radial-gradient(circle at 20% 0%, rgba(255, 122, 61, 0.16), transparent 55%);
+  background-image: radial-gradient(circle at 20% 0%, rgba(43, 182, 201, 0.18), transparent 55%);
 }

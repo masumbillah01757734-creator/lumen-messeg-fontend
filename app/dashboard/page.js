@@ -48,12 +48,12 @@ export default function DashboardPage() {
           onSelectChat={setActiveChatId}
           onOpenBlocked={() => setBlockedModalOpen(true)}
         />
-        <div className="px-4 py-3 border-t border-border">
+        <div className="px-4 py-3 border-t border-border shrink-0 bg-surface">
           <button
             onClick={logout}
-            className="w-full flex items-center justify-center gap-2 text-xs text-text-muted hover:text-text-primary transition-colors"
+            className="w-full flex items-center justify-center gap-2 text-xs font-medium text-text-primary bg-elevated hover:bg-border rounded-lg py-2.5 transition-colors"
           >
-            <LogOut size={14} />
+            <LogOut size={14} className="text-danger" />
             Sign out
           </button>
         </div>
