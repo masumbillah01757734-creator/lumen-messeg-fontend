@@ -252,7 +252,7 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
       </div>
 
       {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto py-4 mb-[90px] md:mb-[55px]">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto py-4">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center gap-3 text-center px-6">
             <div className="h-12 w-12 rounded-full bg-elevated border border-border flex items-center justify-center text-text-muted text-sm font-medium">
