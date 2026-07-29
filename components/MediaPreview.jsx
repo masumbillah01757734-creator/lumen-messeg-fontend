@@ -21,14 +21,14 @@ export default function MediaPreview({ message, isOut = false }) {
         <img
           src={src}
           alt={text || "Photo"}
-          className="rounded-lg max-w-[280px] max-h-[320px] object-cover"
+          className="rounded-lg w-full max-w-[280px] max-h-[320px] object-cover"
           loading="lazy"
         />
       );
 
     case "video":
       return (
-        <video controls className="rounded-lg max-w-[280px] max-h-[320px]">
+        <video controls className="rounded-lg w-full max-w-[280px] max-h-[320px]">
           <source src={src} />
         </video>
       );
@@ -37,14 +37,14 @@ export default function MediaPreview({ message, isOut = false }) {
       return (
         <video
           controls
-          className="rounded-full w-[200px] h-[200px] object-cover"
+          className="rounded-full w-[45vw] h-[45vw] max-w-[200px] max-h-[200px] object-cover"
         >
           <source src={src} />
         </video>
       );
 
     case "animation": // GIF
-      return <img src={src} alt="GIF" className="rounded-lg max-w-[240px]" loading="lazy" />;
+      return <img src={src} alt="GIF" className="rounded-lg w-full max-w-[240px]" loading="lazy" />;
 
     case "sticker":
       return (

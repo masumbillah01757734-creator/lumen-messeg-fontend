@@ -88,7 +88,7 @@ export default function VoicePlayer({ src, seed, variant = "voice", inverted = f
   const label = variant === "audio" ? "Audio" : "Voice message";
 
   return (
-    <div className="flex items-center gap-2.5 w-56">
+    <div className="flex items-center gap-2.5 w-full max-w-[224px] min-w-0">
       <audio ref={audioRef} src={src} preload="metadata" className="hidden" />
 
       <button

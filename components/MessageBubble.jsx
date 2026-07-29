@@ -16,16 +16,15 @@ export default function MessageBubble({ message, onForward }) {
           type="button"
           onClick={() => onForward?.(message)}
           title="Forward"
-          className="opacity-0 group-hover:opacity-100 h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-text-muted hover:bg-elevated hover:text-accent transition-all"
+          className="opacity-70 md:opacity-0 md:group-hover:opacity-100 h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-text-muted bg-elevated/60 md:bg-transparent hover:bg-elevated hover:text-accent active:bg-elevated transition-all"
         >
           <Forward size={14} />
         </button>
       )}
 
       <div
-        className={`max-w-[70%] px-3.5 py-2 shadow-panel ${
-          isOut ? "bubble-out bg-ember text-white" : "bubble-in bg-elevated text-text-primary"
-        }`}
+        className={`max-w-[85%] md:max-w-[70%] px-3.5 py-2 shadow-panel ${isOut ? "bubble-out bg-ember text-white" : "bubble-in bg-elevated text-text-primary"
+          }`}
       >
         {message.message_type !== "text" && (
           <div className={message.text ? "mb-1.5" : ""}>
@@ -50,7 +49,7 @@ export default function MessageBubble({ message, onForward }) {
           type="button"
           onClick={() => onForward?.(message)}
           title="Forward"
-          className="opacity-0 group-hover:opacity-100 h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-text-muted hover:bg-elevated hover:text-accent transition-all"
+          className="opacity-70 md:opacity-0 md:group-hover:opacity-100 h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-text-muted bg-elevated/60 md:bg-transparent hover:bg-elevated hover:text-accent active:bg-elevated transition-all"
         >
           <Forward size={14} />
         </button>
