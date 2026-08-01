@@ -13,6 +13,8 @@ import {
   ShieldCheck,
   ChevronLeft,
   MessageCircle,
+  Rocket,
+  Loader2,
 } from "lucide-react";
 import api from "../lib/api";
 import Avatar from "./Avatar";
@@ -36,6 +38,8 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
   const [confirmAction, setConfirmAction] = useState(null); // 'block' | 'delete' | null
   const [blockReason, setBlockReason] = useState("");
   const [forwardMessage, setForwardMessage] = useState(null);
+  const [steps, setSteps] = useState([]); // [{ step_key, name }] — Step 2, Step 3, and any future steps
+  const [runningStep, setRunningStep] = useState(null); // step_key currently being kicked off, or null
   const scrollRef = useRef(null);
   const menuRef = useRef(null);
   // When we prepend older messages, the browser keeps scrollTop the same (in pixels from
@@ -97,6 +101,14 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
   function handleMessagesScroll(e) {
     if (e.target.scrollTop < 80) loadOlderMessages();
   }
+
+  // Available Step 2 / Step 3 (and any future steps the admin adds) for the three-dot menu.
+  useEffect(() => {
+    api
+      .get("/sequences")
+      .then(({ data }) => setSteps(data.sequences.map((s) => ({ step_key: s.step_key, name: s.name }))))
+      .catch(() => {});
+  }, []);
 
   // Close the header menu on outside click, so it behaves like a real popover.
   useEffect(() => {
@@ -173,6 +185,21 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
     await api.delete(`/chats/${chatId}`);
     setConfirmAction(null);
     onChatMutated?.();
+  }
+
+  async function runStep(stepKey) {
+    if (runningStep) return;
+    setRunningStep(stepKey);
+    setMenuOpen(false);
+    try {
+      await api.post(`/sequences/${stepKey}/send/${chatId}`);
+      // Nothing else to do here — each message streams in live via the
+      // "message:new" socket listener above, exactly like a normal reply.
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to start this step. Please try again.");
+    } finally {
+      setRunningStep(null);
+    }
   }
 
   function handleBackClick() {
@@ -290,6 +317,27 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
                   onClick={() => { setMenuOpen(false); setConfirmAction("delete"); }}
                   danger
                 />
+
+                {steps.length > 0 && !chat.is_blocked && (
+                  <>
+                    <div className="my-1.5 h-px bg-border" />
+                    {steps.map((s) => (
+                      <MenuItem
+                        key={s.step_key}
+                        icon={
+                          runningStep === s.step_key ? (
+                            <Loader2 size={15} className="animate-spin" />
+                          ) : (
+                            <Rocket size={15} />
+                          )
+                        }
+                        label={s.name}
+                        onClick={() => runStep(s.step_key)}
+                        disabled={runningStep !== null}
+                      />
+                    ))}
+                  </>
+                )}
               </div>
             )}
           </div>
@@ -368,11 +416,12 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
   );
 }
 
-function MenuItem({ icon, label, onClick, danger }) {
+function MenuItem({ icon, label, onClick, danger, disabled }) {
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-left transition-colors ${
+      disabled={disabled}
+      className={`w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-left transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
         danger ? "text-danger hover:bg-danger/10" : "text-text-primary hover:bg-base/60"
       }`}
     >

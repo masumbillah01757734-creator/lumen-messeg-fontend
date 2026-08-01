@@ -3,16 +3,18 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
+import { LogOut, ListTodo } from "lucide-react";
 import ChatList from "../../components/ChatList";
 import ChatWindow from "../../components/ChatWindow";
 import BlockedUsersModal from "../../components/BlockedUsersModal";
+import SequenceManagerModal from "../../components/SequenceManagerModal";
 import { getSocket, disconnectSocket } from "../../lib/socket";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [activeChatId, setActiveChatId] = useState(null);
   const [blockedModalOpen, setBlockedModalOpen] = useState(false);
+  const [sequenceModalOpen, setSequenceModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [ready, setReady] = useState(false);
 
@@ -49,7 +51,14 @@ export default function DashboardPage() {
           onSelectChat={setActiveChatId}
           onOpenBlocked={() => setBlockedModalOpen(true)}
         />
-        <div className="px-4 py-3 border-t border-border shrink-0 bg-surface">
+        <div className="px-4 py-3 border-t border-border shrink-0 bg-surface flex flex-col gap-2">
+          <button
+            onClick={() => setSequenceModalOpen(true)}
+            className="w-full flex items-center justify-center gap-2 text-xs font-medium text-text-primary bg-elevated hover:bg-border rounded-lg py-2.5 transition-colors"
+          >
+            <ListTodo size={14} className="text-accent" />
+            Manage Steps
+          </button>
           <button
             onClick={logout}
             className="w-full flex items-center justify-center gap-2 text-xs font-medium text-text-primary bg-elevated hover:bg-border rounded-lg py-2.5 transition-colors"
@@ -70,6 +79,7 @@ export default function DashboardPage() {
       </main>
 
       <BlockedUsersModal open={blockedModalOpen} onClose={() => setBlockedModalOpen(false)} />
+      <SequenceManagerModal open={sequenceModalOpen} onClose={() => setSequenceModalOpen(false)} />
     </div>
   );
 }
