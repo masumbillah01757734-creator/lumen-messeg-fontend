@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 function initials(user) {
   const name = `${user.first_name || ""} ${user.last_name || ""}`.trim() || user.username || "?";
   return name
@@ -17,15 +19,17 @@ function photoUrl(fileId) {
 
 export default function Avatar({ user, size = 44, showOnline = true }) {
   const dim = { width: size, height: size };
+  const [broken, setBroken] = useState(false);
 
   return (
     <div className="relative shrink-0" style={dim}>
-      {user.profile_photo_file_id ? (
+      {user.profile_photo_file_id && !broken ? (
         <img
           src={photoUrl(user.profile_photo_file_id)}
           alt=""
           className="rounded-full object-cover"
           style={dim}
+          onError={() => setBroken(true)}
         />
       ) : (
         <div
