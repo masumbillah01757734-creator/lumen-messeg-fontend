@@ -5,6 +5,7 @@ import { Send, Smile, Paperclip, X, FileText } from "lucide-react";
 import api from "../lib/api";
 import { useSocket } from "../hooks/useSocket";
 import { emojifyHtml } from "../lib/emoji";
+import AlertDialog from "./AlertDialog";
 
 const QUICK_EMOJIS = ["😀", "😂", "❤️", "👍", "🙏", "🎉", "🔥", "😢"];
 
@@ -14,6 +15,7 @@ export default function ReplyBox({ chatId, disabled, onSent }) {
   const [showEmoji, setShowEmoji] = useState(false);
   const [pendingFile, setPendingFile] = useState(null); // File chosen but not sent yet
   const [uploadPct, setUploadPct] = useState(0);
+  const [blockedAlert, setBlockedAlert] = useState(false);
   const typingTimeout = useRef(null);
   const fileInputRef = useRef(null);
   const socket = useSocket();
@@ -58,7 +60,11 @@ export default function ReplyBox({ chatId, disabled, onSent }) {
       onSent?.();
     } catch (err) {
       console.error("Failed to send message:", err);
-      alert(err.response?.data?.message || "Failed to send. Please try again.");
+      if (err.response?.data?.code === "BOT_BLOCKED") {
+        setBlockedAlert(true);
+      } else {
+        alert(err.response?.data?.message || "Failed to send. Please try again.");
+      }
     } finally {
       setSending(false);
     }
@@ -74,6 +80,13 @@ export default function ReplyBox({ chatId, disabled, onSent }) {
 
   return (
     <form onSubmit={handleSend} className="border-t border-border bg-surface px-4 py-3 flex flex-col gap-2 [width:stretch] relative bottom-0">
+      <AlertDialog
+        open={blockedAlert}
+        title="Can't deliver this message"
+        description="This user has blocked the bot, so they won't receive anything you send until they unblock it on their end."
+        onClose={() => setBlockedAlert(false)}
+      />
+
       {pendingFile && (
         <div className="flex items-center gap-2 bg-elevated border border-border rounded-lg px-3 py-2 text-xs">
           <FileText size={14} className="text-accent shrink-0" />
@@ -82,7 +95,7 @@ export default function ReplyBox({ chatId, disabled, onSent }) {
             <span className="text-text-muted shrink-0">{uploadPct}%</span>
           ) : (
             <button
-              type="button"z
+              type="button"
               onClick={() => setPendingFile(null)}
               className="text-text-muted hover:text-danger shrink-0"
             >

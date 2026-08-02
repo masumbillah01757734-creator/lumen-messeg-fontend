@@ -38,7 +38,7 @@ export default function DashboardPage() {
   if (!ready) return null;
 
   return (
-    <div className="h-screen w-screen flex overflow-hidden bg-base">
+    <div className="h-dvh w-full flex overflow-hidden bg-base">
       {/* Sidebar — hidden on mobile once a chat is open */}
       <aside
         className={`w-full sm:w-[340px] shrink-0 border-r border-border bg-surface flex flex-col ${

@@ -235,7 +235,7 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
   const initialLetter = displayName?.[0]?.toUpperCase() ?? "?";
 
   return (
-    <div className="flex-1 flex flex-col h-[60%] bg-base">
+    <div className="flex-1 flex flex-col h-full min-h-0 bg-base">
       {/* Header */}
       <div className="relative top-0 flex items-center gap-3 px-3 md:px-4 py-2.5 border-b border-border bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/80">
         <button
@@ -248,7 +248,7 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
 
         <div className="relative shrink-0">
           <Avatar user={chat} size={40} />
-          {chat.is_blocked && (
+          {(chat.is_blocked || chat.has_blocked_bot) && (
             <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-danger ring-2 ring-surface" />
           )}
         </div>
@@ -257,9 +257,11 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
           <div className="flex items-center gap-1.5">
             <p className="text-sm font-semibold truncate">{displayName}</p>
           </div>
-          <p className={`text-xs truncate ${chat.is_blocked ? "text-danger" : "text-text-muted"}`}>
+          <p className={`text-xs truncate ${chat.is_blocked || chat.has_blocked_bot ? "text-danger" : "text-text-muted"}`}>
             {chat.is_blocked
               ? "Blocked \u2014 can't message you"
+              : chat.has_blocked_bot
+              ? "This user has blocked the bot"
               : chat.username
               ? `@${chat.username}`
               : chat.last_seen
@@ -345,7 +347,7 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
       </div>
 
       {/* Messages */}
-      <div ref={scrollRef} onScroll={handleMessagesScroll} className="flex-1 overflow-y-auto py-4">
+      <div ref={scrollRef} onScroll={handleMessagesScroll} className="flex-1 min-h-0 overflow-y-auto py-4">
         {loadingMore && (
           <div className="flex justify-center py-2">
             <div className="h-4 w-4 rounded-full border-2 border-accent border-t-transparent animate-spin" />
