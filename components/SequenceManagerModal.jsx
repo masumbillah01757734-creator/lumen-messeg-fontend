@@ -151,84 +151,90 @@ export default function SequenceManagerModal({ open, onClose }) {
 
   const current = sequences.find((s) => s.step_key === selectedKey) || null;
 
+  const addStepForm = (
+    <div className="bg-elevated border border-border rounded-lg p-2 flex flex-col gap-1.5 w-full sm:w-auto">
+      <input
+        autoFocus
+        value={newStepName}
+        onChange={(e) => setNewStepName(e.target.value)}
+        placeholder="Name e.g. Step 4"
+        className="bg-base border border-border rounded-md px-2 py-1.5 text-xs outline-none focus:border-accent"
+      />
+      <input
+        value={newStepKey}
+        onChange={(e) => setNewStepKey(e.target.value)}
+        placeholder="key e.g. step4"
+        className="bg-base border border-border rounded-md px-2 py-1.5 text-xs outline-none focus:border-accent"
+      />
+      <div className="flex gap-1.5">
+        <button
+          onClick={createStep}
+          className="flex-1 bg-accent hover:bg-accent-dim text-white text-xs rounded-md py-1.5 transition-colors"
+        >
+          Create
+        </button>
+        <button
+          onClick={() => setAddingStep(false)}
+          className="px-2 text-xs text-text-muted hover:text-text-primary"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
-      <div className="bg-surface border border-border rounded-xl2 w-full max-w-3xl max-h-[85vh] flex flex-col shadow-panel overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
-          <div>
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 sm:px-4">
+      <div className="bg-surface border-0 sm:border border-border rounded-none sm:rounded-xl2 w-full h-full sm:h-auto sm:max-w-3xl sm:max-h-[85vh] flex flex-col shadow-panel overflow-hidden">
+        <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-border shrink-0">
+          <div className="min-w-0">
             <h3 className="font-display font-semibold text-base">Manage Steps</h3>
-            <p className="text-xs text-text-muted mt-0.5">
+            <p className="text-xs text-text-muted mt-0.5 hidden sm:block">
               Content shown here is edited once and reused whenever a Step is triggered from any chat's menu.
             </p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary shrink-0">
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary shrink-0 h-8 w-8 flex items-center justify-center">
             <X size={18} />
           </button>
         </div>
 
-        <div className="flex flex-1 min-h-0">
-          {/* Step list */}
-          <div className="w-44 shrink-0 border-r border-border overflow-y-auto py-2">
-            {sequences.map((s) => (
-              <button
-                key={s.step_key}
-                onClick={() => setSelectedKey(s.step_key)}
-                className={`w-full text-left px-3.5 py-2.5 text-sm truncate transition-colors ${
-                  s.step_key === selectedKey ? "bg-elevated text-text-primary font-medium" : "text-text-muted hover:bg-elevated/60"
-                }`}
-              >
-                {s.name}
-                <span className="block text-[10px] text-text-faint">{s.items.length} item{s.items.length === 1 ? "" : "s"}</span>
-              </button>
-            ))}
+        <div className="flex flex-col sm:flex-row flex-1 min-h-0">
+          {/* Step list — horizontal scrolling tabs on mobile, vertical sidebar on desktop */}
+          <div className="sm:w-44 sm:shrink-0 border-b sm:border-b-0 sm:border-r border-border sm:overflow-y-auto shrink-0">
+            <div className="flex sm:flex-col gap-1.5 sm:gap-0 overflow-x-auto sm:overflow-x-visible px-3 sm:px-0 py-2.5 sm:py-2">
+              {sequences.map((s) => (
+                <button
+                  key={s.step_key}
+                  onClick={() => setSelectedKey(s.step_key)}
+                  className={`shrink-0 sm:w-full text-left rounded-full sm:rounded-none px-3.5 py-2 sm:py-2.5 text-xs sm:text-sm whitespace-nowrap sm:whitespace-normal sm:truncate transition-colors ${
+                    s.step_key === selectedKey
+                      ? "bg-elevated text-text-primary font-medium"
+                      : "bg-elevated/40 sm:bg-transparent text-text-muted hover:bg-elevated/60"
+                  }`}
+                >
+                  {s.name}
+                  <span className="hidden sm:block text-[10px] text-text-faint">{s.items.length} item{s.items.length === 1 ? "" : "s"}</span>
+                </button>
+              ))}
 
-            <div className="px-2 pt-2">
-              {addingStep ? (
-                <div className="bg-elevated border border-border rounded-lg p-2 flex flex-col gap-1.5">
-                  <input
-                    autoFocus
-                    value={newStepName}
-                    onChange={(e) => setNewStepName(e.target.value)}
-                    placeholder="Name e.g. Step 4"
-                    className="bg-base border border-border rounded-md px-2 py-1.5 text-xs outline-none focus:border-accent"
-                  />
-                  <input
-                    value={newStepKey}
-                    onChange={(e) => setNewStepKey(e.target.value)}
-                    placeholder="key e.g. step4"
-                    className="bg-base border border-border rounded-md px-2 py-1.5 text-xs outline-none focus:border-accent"
-                  />
-                  <div className="flex gap-1.5">
-                    <button
-                      onClick={createStep}
-                      className="flex-1 bg-accent hover:bg-accent-dim text-white text-xs rounded-md py-1.5 transition-colors"
-                    >
-                      Create
-                    </button>
-                    <button
-                      onClick={() => setAddingStep(false)}
-                      className="px-2 text-xs text-text-muted hover:text-text-primary"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              ) : (
+              {!addingStep && (
                 <button
                   onClick={() => {
                     setAddingStep(true);
                     setNewStepKey(`step${sequences.length + 2}`);
                   }}
-                  className="w-full flex items-center justify-center gap-1.5 text-xs font-medium text-accent hover:bg-accent-soft rounded-lg py-2 transition-colors"
+                  className="shrink-0 sm:w-full flex items-center justify-center gap-1.5 text-xs font-medium text-accent hover:bg-accent-soft rounded-full sm:rounded-lg px-3.5 sm:px-0 py-2 sm:mt-2 transition-colors whitespace-nowrap"
                 >
                   <Plus size={13} /> Add step
                 </button>
               )}
             </div>
+
+            {addingStep && <div className="px-3 sm:px-2 pb-2.5 sm:pb-2">{addStepForm}</div>}
           </div>
 
           {/* Selected step editor */}
-          <div className="flex-1 min-w-0 overflow-y-auto p-4">
+          <div className="flex-1 min-w-0 overflow-y-auto p-3.5 sm:p-4">
             {loading && <p className="text-center text-xs text-text-muted mt-6">Loading…</p>}
             {error && <p className="text-center text-xs text-danger mt-6">{error}</p>}
 
@@ -331,7 +337,7 @@ function StepEditor({ seq, onUpdateMeta, onAddItem, onUpdateItem, onDeleteItem, 
             className="w-full bg-elevated border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-accent"
           />
         </div>
-        <div className="w-36">
+        <div className="w-28 sm:w-36">
           <label className="text-[11px] text-text-muted flex items-center gap-1 mb-1">
             <Clock size={11} /> Delay (ms)
           </label>
@@ -377,11 +383,11 @@ function StepEditor({ seq, onUpdateMeta, onAddItem, onUpdateItem, onDeleteItem, 
       {itemError && <p className="text-xs text-danger">{itemError}</p>}
 
       {/* Add item */}
-      <div className="flex items-center gap-2 pt-2 border-t border-border">
+      <div className="flex items-center flex-wrap gap-2 pt-2 border-t border-border">
         <select
           value={addType}
           onChange={(e) => setAddType(e.target.value)}
-          className="bg-elevated border border-border rounded-lg px-2.5 py-2 text-xs outline-none focus:border-accent"
+          className="flex-1 sm:flex-none min-w-0 bg-elevated border border-border rounded-lg px-2.5 py-2 text-xs outline-none focus:border-accent"
         >
           {Object.entries(TYPE_META).map(([key, meta]) => (
             <option key={key} value={key}>
