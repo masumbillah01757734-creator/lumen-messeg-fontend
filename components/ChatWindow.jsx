@@ -264,9 +264,7 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
               ? "This user has blocked the bot"
               : chat.username
               ? `@${chat.username}`
-              : chat.last_seen
-              ? `Seen ${new Date(chat.last_seen).toLocaleString()}`
-              : "No username"}
+              : `ID: ${chat.chat_id}`}
           </p>
         </div>
 
