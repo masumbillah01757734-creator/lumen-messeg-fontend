@@ -287,7 +287,7 @@ export default function ChatWindow({ chatId, onChatMutated, onBack }) {
             </button>
 
             {menuOpen && (
-              <div className="n right-0 top-11 w-56 bg-elevated border border-border rounded-xl shadow-panel py-1.5 z-10 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-100">
+              <div className="absolute right-0 top-11 w-56 bg-elevated border border-border rounded-xl shadow-panel py-1.5 z-10 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-100">
                 <MenuItem
                   icon={chat.is_pinned ? <PinOff size={15} /> : <Pin size={15} />}
                   label={chat.is_pinned ? "Unpin chat" : "Pin chat"}
