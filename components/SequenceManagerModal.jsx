@@ -19,6 +19,15 @@ import api from "../lib/api";
 import VoicePlayer from "./VoicePlayer";
 import ConfirmDialog from "./ConfirmDialog";
 
+// Keep in sync with backend MAX_UPLOAD_MB (src/routes/sequences.js). Until the Local
+// Bot API Server is deployed, the backend caps at a lower value than this — either way,
+// a failed upload always returns a clear message now, this is just an instant local check.
+const MAX_UPLOAD_MB = Number(process.env.NEXT_PUBLIC_MAX_UPLOAD_MB) || 2000;
+
+function fileTooLarge(file) {
+  return file.size > MAX_UPLOAD_MB * 1024 * 1024;
+}
+
 const TYPE_META = {
   text: { icon: TypeIcon, label: "Text message", accept: null },
   photo: { icon: ImageIcon, label: "Photo", accept: "image/*" },
@@ -271,11 +280,13 @@ function StepEditor({ seq, onUpdateMeta, onAddItem, onUpdateItem, onDeleteItem, 
   const [delayMs, setDelayMs] = useState(seq.delay_ms);
   const [addType, setAddType] = useState("text");
   const [adding, setAdding] = useState(false);
+  const [itemError, setItemError] = useState("");
   const addFileRef = useRef(null);
 
   const sortedItems = [...seq.items].sort((a, b) => a.order - b.order);
 
   async function handleAddClick() {
+    setItemError("");
     if (addType === "text") {
       setAdding(true);
       try {
@@ -292,9 +303,16 @@ function StepEditor({ seq, onUpdateMeta, onAddItem, onUpdateItem, onDeleteItem, 
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
+    setItemError("");
+    if (fileTooLarge(file)) {
+      setItemError(`"${file.name}" is ${(file.size / 1024 / 1024).toFixed(0)}MB — max allowed is ${MAX_UPLOAD_MB}MB.`);
+      return;
+    }
     setAdding(true);
     try {
       await onAddItem(addType, { file });
+    } catch (err) {
+      setItemError(err.response?.data?.message || "Upload failed. Please try again.");
     } finally {
       setAdding(false);
     }
@@ -348,12 +366,15 @@ function StepEditor({ seq, onUpdateMeta, onAddItem, onUpdateItem, onDeleteItem, 
             onUpdate={(patch, file) => onUpdateItem(item._id, patch, file)}
             onDelete={() => onDeleteItem(item._id)}
             onMove={(dir) => onMoveItem(item._id, dir)}
+            onError={setItemError}
           />
         ))}
         {sortedItems.length === 0 && (
           <p className="text-xs text-text-muted text-center py-4">No content yet — add the first item below.</p>
         )}
       </div>
+
+      {itemError && <p className="text-xs text-danger">{itemError}</p>}
 
       {/* Add item */}
       <div className="flex items-center gap-2 pt-2 border-t border-border">
@@ -388,7 +409,7 @@ function StepEditor({ seq, onUpdateMeta, onAddItem, onUpdateItem, onDeleteItem, 
   );
 }
 
-function ItemCard({ item, index, isFirst, isLast, onUpdate, onDelete, onMove }) {
+function ItemCard({ item, index, isFirst, isLast, onUpdate, onDelete, onMove, onError }) {
   const [text, setText] = useState(item.text || "");
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef(null);
@@ -399,9 +420,16 @@ function ItemCard({ item, index, isFirst, isLast, onUpdate, onDelete, onMove }) 
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
+    onError?.("");
+    if (fileTooLarge(file)) {
+      onError?.(`"${file.name}" is ${(file.size / 1024 / 1024).toFixed(0)}MB — max allowed is ${MAX_UPLOAD_MB}MB.`);
+      return;
+    }
     setUploading(true);
     try {
       await onUpdate({ text }, file);
+    } catch (err) {
+      onError?.(err.response?.data?.message || "Upload failed. Please try again.");
     } finally {
       setUploading(false);
     }
